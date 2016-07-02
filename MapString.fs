@@ -6,15 +6,13 @@ let mapString (str: string) =
     
     let foldStr chr acc =
         match acc with
-        | (pervChr, cnt)::tail -> 
+        | (' ', 0, "") -> 
+            chr, 1, ""
+        | pervChr, pervCnt, tail -> 
             if chr = pervChr then                
-                (chr, cnt + 1)::tail
+                chr, pervCnt + 1, tail
             else 
-                (chr, 1)::acc
-        | [] -> 
-            [(chr, 1)]
-
-    
-    //YES O(N*2)
-    Seq.foldBack foldStr str []
-    |> List.fold (fun acc (chr, cnt) -> sprintf "%s%c%i" acc chr cnt) ""
+                chr, 1, sprintf "%c%i%s" pervChr pervCnt tail
+        
+    let chr, cnt, tail = Seq.foldBack foldStr str (' ', 0, "")
+    sprintf "%c%i%s" chr cnt tail
